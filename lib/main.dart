@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 
 var personnelButtonList = new List<Widget>();
-var personnelList = ["hi","sup","yo","ayyylmao","okalrightok"];
+var personnelList = ["Kok Rui","Sujith Harirajan","PTE Ian","ayyylmao","okalrightok"];
 
 void main() => runApp(SignUpApp());
 
@@ -25,9 +27,10 @@ class Personnel {
   final StatusType status;
   final String permStatusDetails;
   final String tempStatusDetails;
+  final String mcDetails;
   final int groupId;
 
-  Personnel({this.id,this.name,this.status,this.permStatusDetails,this.tempStatusDetails,this.groupId});
+  Personnel({this.id,this.name,this.status,this.permStatusDetails,this.tempStatusDetails,this.mcDetails,this.groupId});
 }
 
 class PersonnelGroup {
@@ -51,11 +54,12 @@ class SignUpApp extends StatelessWidget {
           minWidth: 150.0,
           height: 75.0,
 
-        )
+        ),
 
       )
     );
   }
+
 }
 
 class SignUpScreen extends StatelessWidget {
@@ -75,6 +79,23 @@ class SignUpScreen extends StatelessWidget {
   }
 }
 
+/*class GroupCard extends StatefulWidget{
+  @override
+  _GroupState createState() => _GroupState();
+
+  const GroupCard(
+      Key key,
+      this.
+      ) : super(key:key);
+
+  final bool showTot;
+  final bool showCur;
+}
+
+class _GroupState extends State<GroupCard>{
+
+}*/
+
 class PersonnelCard extends StatefulWidget{
   @override
   _PersonnelState createState() => _PersonnelState();
@@ -85,6 +106,7 @@ class PersonnelCard extends StatefulWidget{
     this.name = "noname",
     this.tempStatusDetails,
     this.permStatusDetails,
+    this.mcDetails,
     @required this.groupId,
 
 
@@ -94,18 +116,25 @@ class PersonnelCard extends StatefulWidget{
   final String name;
   final String permStatusDetails;
   final String tempStatusDetails;
+  final String mcDetails;
   final int groupId;
 
 }
 
 class _PersonnelState extends State<PersonnelCard>{
-
   bool pressed=false;
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
+      color: ((){
+        switch(widget.status){
+          case StatusType.mc:return Colors.red;break;
+          case StatusType.tempEx: return Colors.orange;break;
+          case StatusType.none: return Colors.green;break;
 
-      color: Colors.amberAccent,
+          default: return Colors.amber; // amber border for perm and both
+        }
+      }()),
       padding: EdgeInsets.zero,
       onPressed: (){
         setState((){
@@ -113,18 +142,13 @@ class _PersonnelState extends State<PersonnelCard>{
         });
       },
       child: AnimatedContainer(
-        padding: ((){
-          switch(widget.status){
-            case StatusType.permEx:return EdgeInsets.symmetric(vertical: 8.0,horizontal: 8.0);break;
-            case StatusType.bothEx:return EdgeInsets.symmetric(vertical: 8.0,horizontal: 8.0);break;
-            default: return EdgeInsets.zero;
-          }
-        }()),
-        width: pressed?200:150.0,
+        padding:EdgeInsets.symmetric(vertical: 8.0,horizontal: 8.0),
+        width: 150.0,
         height: pressed ? 150.0:75.0,
         duration: Duration(milliseconds: 500),
         curve: Curves.fastOutSlowIn,
         child: Container(
+          padding: pressed ? EdgeInsets.symmetric(vertical: 3.0,horizontal: 3.0):null,
           width: double.infinity,
           color: ((){
             switch(widget.status){
@@ -135,8 +159,31 @@ class _PersonnelState extends State<PersonnelCard>{
               default: return Colors.green; // green for none and perm
             }
           }()),
-          child: pressed?Column(children: [Text(widget.name),Text(widget.status.toString()),Text(widget.groupId.toString())],):Column(children: [Text(widget.name),Text(widget.status.toString())],),
-        ),
+          child: pressed ?
+          Wrap(
+            //mainAxisAlignment: MainAxisAlignment.start,
+            //crossAxisAlignment: CrossAxisAlignment.start,
+            children: ((){
+              List<Widget> initclist = [
+                Container(padding:EdgeInsets.only(bottom: 3.0),child: AutoSizeText(widget.name,style: TextStyle(fontSize: 14.0),)),
+              ];
+              if (widget.status == StatusType.tempEx || widget.status == StatusType.bothEx){
+                initclist.add(AutoSizeText("Temp Ex Details:",style: TextStyle(fontSize: 12.0)));
+                initclist.add(AutoSizeText(widget.tempStatusDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
+              }
+              if (widget.status == StatusType.permEx || widget.status == StatusType.bothEx){
+                initclist.add(AutoSizeText("Perm Ex Details:",style: TextStyle(fontSize: 12.0)));
+                initclist.add(AutoSizeText(widget.permStatusDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
+              }
+              if (widget.status == StatusType.mc){
+                initclist.add(AutoSizeText("MC Details:",style: TextStyle(fontSize: 12.0)));
+                initclist.add(AutoSizeText(widget.mcDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
+              }
+              return initclist;
+            }()),direction: Axis.vertical,clipBehavior: Clip.antiAlias,
+            ):
+          Center(child:AutoSizeText(widget.name,style: TextStyle(fontSize: 26.0),textAlign: TextAlign.center,))
+        )
       )
     );
   }
@@ -167,21 +214,21 @@ class _StrengthState extends State<StrengthScreen>  {
 
   @override
   Widget build(BuildContext context){
-    return Column(
+    return SingleChildScrollView(
+      child: Column(
       children: [
-        Text("HAI"),
-        Text("LMAO"),
+        Text("DARI KANAN BILANG"),
         FlatButton(
           onPressed:populatePersonnel,
-          child:Text("hai!")
+          child:Text("POPULATE (testing only)!")
         ),
         Wrap(
             spacing: 8.0,
             runSpacing: 4.0,
             children: strengthStateButtons,
-
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }
