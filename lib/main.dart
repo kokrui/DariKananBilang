@@ -4,24 +4,20 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-
-
 var personnelButtonList = new List<Widget>();
-var personnelList = ["Kok Rui","Sujith Harirajan","PTE Ian","ayyylmao","okalrightok"];
+var personnelList = [
+  "Jon Doe",
+  "Much Longer Name",
+  "Jane Doe",
+  "lolololol",
+  "ha ha ha ha ha"
+];
 
 void main() => runApp(SignUpApp());
 
-enum StatusType {
-
-  none,
-  permEx,
-  tempEx,
-  bothEx,
-  mc
-}
+enum StatusType { none, permEx, tempEx, bothEx, mc }
 
 class Personnel {
-
   final int id;
   final String name;
   final StatusType status;
@@ -30,36 +26,38 @@ class Personnel {
   final String mcDetails;
   final int groupId;
 
-  Personnel({this.id,this.name,this.status,this.permStatusDetails,this.tempStatusDetails,this.mcDetails,this.groupId});
+  Personnel(
+      {this.id,
+      this.name,
+      this.status,
+      this.permStatusDetails,
+      this.tempStatusDetails,
+      this.mcDetails,
+      this.groupId});
 }
 
 class PersonnelGroup {
   final int id;
   final int groupName;
 
-  PersonnelGroup({this.id,this.groupName});
+  PersonnelGroup({this.id, this.groupName});
 }
 
 class SignUpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        '/': (context) => StrengthScreen(),
-        '/welcome': (context) => WelcomeScreen(),
-
-      },
-      theme: ThemeData(
-        buttonTheme: ButtonThemeData(
-          minWidth: 150.0,
-          height: 75.0,
-
-        ),
-
-      )
-    );
+        routes: {
+          '/': (context) => StrengthScreen(),
+          '/welcome': (context) => WelcomeScreen(),
+        },
+        theme: ThemeData(
+          buttonTheme: ButtonThemeData(
+            minWidth: 150.0,
+            height: 75.0,
+          ),
+        ));
   }
-
 }
 
 class SignUpScreen extends StatelessWidget {
@@ -79,24 +77,67 @@ class SignUpScreen extends StatelessWidget {
   }
 }
 
-/*class GroupCard extends StatefulWidget{
+class GroupCard extends StatefulWidget {
   @override
   _GroupState createState() => _GroupState();
 
-  const GroupCard(
-      Key key,
-      this.
-      ) : super(key:key);
+  const GroupCard({
+    Key key,
+    this.showStrength = true,
+    @required this.childrenPersonnel,
+    this.spacing = 8.0,
+    this.runSpacing = 4.0,
+    @required this.groupName,
+  }) : super(key: key);
 
-  final bool showTot;
-  final bool showCur;
+  final bool showStrength;
+  final List<Widget> childrenPersonnel;
+  final double spacing;
+  final double runSpacing;
+  final String groupName;
 }
 
-class _GroupState extends State<GroupCard>{
+class _GroupState extends State<GroupCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 5.0),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: Padding(padding:EdgeInsets.only(bottom: 5.0),child:Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
 
-}*/
+            children: [
+              Expanded(child:Container(alignment: Alignment.center,child:Text(widget.groupName,style: TextStyle(
+                  color: Colors.black,
+                  decoration: TextDecoration.none,
+                  fontSize: 22),textAlign: TextAlign.center))),
+              Expanded(child:Container(alignment: Alignment.center,child:AutoSizeText("Current Strength:\n7/10",style: TextStyle(
+                  color: Colors.black,
+                  decoration: TextDecoration.none,
+                  fontSize: 25),textAlign: TextAlign.center,))),
+              Expanded(child:Container(alignment: Alignment.center,child:AutoSizeText("Participant Selector Mode",style: TextStyle(
+                  color: Colors.black,
+                  decoration: TextDecoration.none,
+                  fontSize: 18),textAlign: TextAlign.center)))
+            ],
+          ),
+          Wrap(
 
-class PersonnelCard extends StatefulWidget{
+            children: widget.childrenPersonnel,
+            spacing: widget.spacing,
+            runSpacing: widget.runSpacing,
+          ),
+        ])
+        )
+
+    );
+  }
+}
+
+class PersonnelCard extends StatefulWidget {
   @override
   _PersonnelState createState() => _PersonnelState();
 
@@ -108,9 +149,7 @@ class PersonnelCard extends StatefulWidget{
     this.permStatusDetails,
     this.mcDetails,
     @required this.groupId,
-
-
-}) : super(key:key);
+  }) : super(key: key);
 
   final StatusType status;
   final String name;
@@ -118,114 +157,162 @@ class PersonnelCard extends StatefulWidget{
   final String tempStatusDetails;
   final String mcDetails;
   final int groupId;
-
 }
 
-class _PersonnelState extends State<PersonnelCard>{
-  bool pressed=false;
+class _PersonnelState extends State<PersonnelCard> {
+  bool pressed = false;
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      color: ((){
-        switch(widget.status){
-          case StatusType.mc:return Colors.red;break;
-          case StatusType.tempEx: return Colors.orange;break;
-          case StatusType.none: return Colors.green;break;
+        color: (() {
+          switch (widget.status) {
+            case StatusType.mc:
+              return Colors.red;
+              break;
+            case StatusType.tempEx:
+              return Colors.orange;
+              break;
+            case StatusType.none:
+              return Colors.green;
+              break;
 
-          default: return Colors.amber; // amber border for perm and both
-        }
-      }()),
-      padding: EdgeInsets.zero,
-      onPressed: (){
-        setState((){
-          pressed = !pressed;
-        });
-      },
-      child: AnimatedContainer(
-        padding:EdgeInsets.symmetric(vertical: 8.0,horizontal: 8.0),
-        width: 150.0,
-        height: pressed ? 150.0:75.0,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn,
-        child: Container(
-          padding: pressed ? EdgeInsets.symmetric(vertical: 3.0,horizontal: 3.0):null,
-          width: double.infinity,
-          color: ((){
-            switch(widget.status){
-              case StatusType.mc:return Colors.red;break;
-              case StatusType.tempEx: return Colors.orange;break;
-              case StatusType.bothEx: return Colors.orange;break;
+            default:
+              return Colors.amber; // amber border for perm and both
+          }
+        }()),
+        padding: EdgeInsets.zero,
+        onPressed: () {
+          setState(() {
+            pressed = !pressed;
+          });
+        },
+        child: AnimatedContainer(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+            width: 150.0,
+            height: pressed ? 150.0 : 75.0,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.fastOutSlowIn,
+            child: Container(
+                padding: pressed
+                    ? EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0)
+                    : null,
+                width: double.infinity,
+                color: (() {
+                  switch (widget.status) {
+                    case StatusType.mc:
+                      return Colors.red;
+                      break;
+                    case StatusType.tempEx:
+                      return Colors.orange;
+                      break;
+                    case StatusType.bothEx:
+                      return Colors.orange;
+                      break;
 
-              default: return Colors.green; // green for none and perm
-            }
-          }()),
-          child: pressed ?
-          Wrap(
-            //mainAxisAlignment: MainAxisAlignment.start,
-            //crossAxisAlignment: CrossAxisAlignment.start,
-            children: ((){
-              List<Widget> initclist = [
-                Container(padding:EdgeInsets.only(bottom: 3.0),child: AutoSizeText(widget.name,style: TextStyle(fontSize: 14.0),)),
-              ];
-              if (widget.status == StatusType.tempEx || widget.status == StatusType.bothEx){
-                initclist.add(AutoSizeText("Temp Ex Details:",style: TextStyle(fontSize: 12.0)));
-                initclist.add(AutoSizeText(widget.tempStatusDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
-              }
-              if (widget.status == StatusType.permEx || widget.status == StatusType.bothEx){
-                initclist.add(AutoSizeText("Perm Ex Details:",style: TextStyle(fontSize: 12.0)));
-                initclist.add(AutoSizeText(widget.permStatusDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
-              }
-              if (widget.status == StatusType.mc){
-                initclist.add(AutoSizeText("MC Details:",style: TextStyle(fontSize: 12.0)));
-                initclist.add(AutoSizeText(widget.mcDetails ?? "None Given",style: TextStyle(fontSize: 8.0)));
-              }
-              return initclist;
-            }()),direction: Axis.vertical,clipBehavior: Clip.antiAlias,
-            ):
-          Center(child:AutoSizeText(widget.name,style: TextStyle(fontSize: 26.0),textAlign: TextAlign.center,))
-        )
-      )
-    );
+                    default:
+                      return Colors.green; // green for none and perm
+                  }
+                }()),
+                child: pressed
+                    ? Wrap(
+                        //mainAxisAlignment: MainAxisAlignment.start,
+                        //crossAxisAlignment: CrossAxisAlignment.start,
+                        children: (() {
+                          List<Widget> initclist = [
+                            Container(
+                                padding: EdgeInsets.only(bottom: 3.0),
+                                child: AutoSizeText(
+                                  widget.name,
+                                  style: TextStyle(fontSize: 14.0),
+                                )),
+                          ];
+                          if (widget.status == StatusType.tempEx ||
+                              widget.status == StatusType.bothEx) {
+                            initclist.add(AutoSizeText("Temp Ex Details:",
+                                style: TextStyle(fontSize: 12.0)));
+                            initclist.add(AutoSizeText(
+                                widget.tempStatusDetails ?? "None Given",
+                                style: TextStyle(fontSize: 8.0)));
+                          }
+                          if (widget.status == StatusType.permEx ||
+                              widget.status == StatusType.bothEx) {
+                            initclist.add(AutoSizeText("Perm Ex Details:",
+                                style: TextStyle(fontSize: 12.0)));
+                            initclist.add(AutoSizeText(
+                                widget.permStatusDetails ?? "None Given",
+                                style: TextStyle(fontSize: 8.0)));
+                          }
+                          if (widget.status == StatusType.mc) {
+                            initclist.add(AutoSizeText("MC Details:",
+                                style: TextStyle(fontSize: 12.0)));
+                            initclist.add(AutoSizeText(
+                                widget.mcDetails ?? "None Given",
+                                style: TextStyle(fontSize: 8.0)));
+                          }
+                          return initclist;
+                        }()),
+                        direction: Axis.vertical,
+                        clipBehavior: Clip.antiAlias,
+                      )
+                    : Center(
+                        child: AutoSizeText(
+                        widget.name,
+                        style: TextStyle(fontSize: 26.0),
+                        textAlign: TextAlign.center,
+                      )))));
   }
 }
 
-class StrengthScreen extends StatefulWidget{
+class StrengthScreen extends StatefulWidget {
   @override
   _StrengthState createState() => _StrengthState();
 }
 
-class _StrengthState extends State<StrengthScreen>  {
-
+class _StrengthState extends State<StrengthScreen> {
   var strengthStateButtons = new List<Widget>();
 
-  void populatePersonnel(){
+  void populatePersonnel() {
     for (var val in personnelList) {
       personnelButtonList.add(new PersonnelCard(
-        name:val,
+        name: val,
         groupId: 0,
         status: StatusType.values[new Random().nextInt(5)],
+        permStatusDetails: "RMJ + Heavy Load",
+        mcDetails: "chaokeng prolly",
+        tempStatusDetails: "LD, ends 290920\n",
       ));
     }
-    setState((){
-      strengthStateButtons=personnelButtonList;
+    setState(() {
+      strengthStateButtons = personnelButtonList;
       print(strengthStateButtons);
     });
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-      children: [
-        Text("DARI KANAN BILANG"),
-        FlatButton(
-          onPressed:populatePersonnel,
-          child:Text("POPULATE (testing only)!")
-        ),
-        Wrap(
+        children: [
+          Text("DARI KANAN BILANG",
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.black)),
+          Text(
+            "wgt count strength?",
+            style: TextStyle(
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                fontSize: 30),
+          ),
+          FlatButton(
+              onPressed: populatePersonnel,
+              child: Text("POPULATE BUTTON (testing only)!")),
+          GroupCard(
             spacing: 8.0,
             runSpacing: 4.0,
-            children: strengthStateButtons,
+            childrenPersonnel: strengthStateButtons,
+            groupName: "Cat Company Platoon 420",
           )
         ],
       ),
@@ -244,9 +331,11 @@ class _SignUpFormState extends State<SignUpForm> {
   final _usernameTextController = TextEditingController();
 
   double _formProgress = 0;
+
   void _showWelcomeScreen() {
     Navigator.of(this.context).pushNamed('/welcome');
   }
+
   void _updateFormProgress() {
     var progress = 0.0;
     var controllers = [
@@ -266,7 +355,6 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -275,10 +363,7 @@ class _SignUpFormState extends State<SignUpForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           LinearProgressIndicator(value: _formProgress),
-          Text('Sign up', style: Theme
-              .of(context)
-              .textTheme
-              .headline4),
+          Text('Sign up', style: Theme.of(context).textTheme.headline4),
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
