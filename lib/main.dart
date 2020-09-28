@@ -98,6 +98,8 @@ class GroupCard extends StatefulWidget {
 }
 
 class _GroupState extends State<GroupCard> {
+  bool selectmode = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -105,35 +107,104 @@ class _GroupState extends State<GroupCard> {
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 5.0),
             borderRadius: BorderRadius.all(Radius.circular(20))),
-        child: Padding(padding:EdgeInsets.only(bottom: 5.0),child:Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-
-            children: [
-              Expanded(child:Container(alignment: Alignment.center,child:Text(widget.groupName,style: TextStyle(
-                  color: Colors.black,
-                  decoration: TextDecoration.none,
-                  fontSize: 22),textAlign: TextAlign.center))),
-              Expanded(child:Container(alignment: Alignment.center,child:AutoSizeText("Current Strength:\n7/10",style: TextStyle(
-                  color: Colors.black,
-                  decoration: TextDecoration.none,
-                  fontSize: 25),textAlign: TextAlign.center,))),
-              Expanded(child:Container(alignment: Alignment.center,child:AutoSizeText("Participant Selector Mode",style: TextStyle(
-                  color: Colors.black,
-                  decoration: TextDecoration.none,
-                  fontSize: 18),textAlign: TextAlign.center)))
-            ],
-          ),
-          Wrap(
-
-            children: widget.childrenPersonnel,
-            spacing: widget.spacing,
-            runSpacing: widget.runSpacing,
-          ),
-        ])
-        )
-
-    );
+        child: Padding(
+            padding: EdgeInsets.only(bottom: 5.0),
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: Text(widget.groupName,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none,
+                                  fontSize: 22),
+                              textAlign: TextAlign.center))),
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: AutoSizeText(
+                            "Current Strength:\n7/10",
+                            style: TextStyle(
+                                color: Colors.black,
+                                decoration: TextDecoration.none,
+                                fontSize: 25),
+                            textAlign: TextAlign.center,
+                          ))),
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: Material(
+                              color: Colors.transparent,
+                              child: Column(
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        AutoSizeText("Select Participating:",
+                                            style: TextStyle(
+                                                fontFamily: 'monospace',
+                                                color: Colors.black,
+                                                decoration: TextDecoration.none,
+                                                fontSize: 18),
+                                            textAlign: TextAlign.center),
+                                        Switch(
+                                          value: selectmode,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectmode = value;
+                                              print(selectmode);
+                                            });
+                                          },
+                                          activeColor: Colors.green,
+                                          activeTrackColor: Colors.greenAccent,
+                                        ),
+                                      ]),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Expanded(child:OutlineButton(child: Text("Select None"),
+                                          onPressed: (() {
+                                            print(1 + 1);
+                                          }),
+                                          borderSide: BorderSide(color: Colors.green),)),
+                                        Expanded(child: OutlineButton(child: Text("Select All but MC"),
+                                          onPressed: (() {
+                                            print(1 + 1);
+                                          }),
+                                          borderSide: BorderSide(color: Colors.green),
+                                        )),
+                                       /* OutlineButton(
+                                          child: Text("Select All but Status/MC"),
+                                          onPressed: (() {
+                                            print(1 + 1);
+                                          }),
+                                          borderSide: BorderSide(color: Colors.green),
+                                        ),*/
+                                        Expanded(child:OutlineButton(
+                                          child: Text("Select All"),
+                                          onPressed: (() {
+                                            print(1 + 1);
+                                          }),
+                                          borderSide: BorderSide(color: Colors.green),
+                                        )),
+                                      ]),
+                                ],
+                              ))))
+                ],
+              ),
+              Wrap(
+                children: widget.childrenPersonnel,
+                spacing: widget.spacing,
+                runSpacing: widget.runSpacing,
+              ),
+            ])));
   }
 }
 
@@ -149,6 +220,7 @@ class PersonnelCard extends StatefulWidget {
     this.permStatusDetails,
     this.mcDetails,
     @required this.groupId,
+    @required this.participating,
   }) : super(key: key);
 
   final StatusType status;
@@ -157,6 +229,7 @@ class PersonnelCard extends StatefulWidget {
   final String tempStatusDetails;
   final String mcDetails;
   final int groupId;
+  final bool participating;
 }
 
 class _PersonnelState extends State<PersonnelCard> {
