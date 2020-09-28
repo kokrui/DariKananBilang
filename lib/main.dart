@@ -165,20 +165,20 @@ class _GroupState extends State<GroupCard> {
                                         ),
                                       ]),
                                   Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        Expanded(child:OutlineButton(child: Text("Select None"),
+                                        Expanded(flex:4,child:OutlineButton(child: Text("Select None"),
                                           onPressed: (() {
                                             print(1 + 1);
                                           }),
-                                          borderSide: BorderSide(color: Colors.green),)),
-                                        Expanded(child: OutlineButton(child: Text("Select All but MC"),
+                                          borderSide: BorderSide(color: Colors.green,width:9.0),)),
+                                        Spacer(flex:1),
+                                        Expanded(flex:4,child: OutlineButton(child: Text("Select All but MC"),
                                           onPressed: (() {
                                             print(1 + 1);
                                           }),
-                                          borderSide: BorderSide(color: Colors.green),
+                                          borderSide: BorderSide(color: Colors.green,width:9.0),
                                         )),
                                        /* OutlineButton(
                                           child: Text("Select All but Status/MC"),
@@ -187,23 +187,25 @@ class _GroupState extends State<GroupCard> {
                                           }),
                                           borderSide: BorderSide(color: Colors.green),
                                         ),*/
-                                        Expanded(child:OutlineButton(
+                                        Spacer(flex:1),
+                                        Expanded(flex:4,child:OutlineButton(
+
                                           child: Text("Select All"),
                                           onPressed: (() {
                                             print(1 + 1);
                                           }),
-                                          borderSide: BorderSide(color: Colors.green),
+                                          borderSide: BorderSide(color: Colors.green,width:9.0),
                                         )),
                                       ]),
                                 ],
                               ))))
                 ],
               ),
-              Wrap(
+              Padding(padding: EdgeInsets.only(top:15.0),child:Wrap(
                 children: widget.childrenPersonnel,
                 spacing: widget.spacing,
                 runSpacing: widget.runSpacing,
-              ),
+              )),
             ])));
   }
 }
