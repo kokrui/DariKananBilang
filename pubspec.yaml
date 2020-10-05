@@ -23,10 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite:
+  hive: ^1.4.4+1
+  hive_flutter: ^0.3.1
   path:
   auto_size_text:
-  path_provider:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -36,6 +36,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  hive_generator: ^0.8.1
+  build_runner: ^1.10.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
