@@ -6,7 +6,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 
-
+const personnelBox = 'PersonnelBox';
+const groupBox = 'GroupBox';
 
 var personnelButtonList = new List<Widget>();
 var personnelList = [
@@ -17,9 +18,15 @@ var personnelList = [
   "ha ha ha ha ha"
 ];
 
-void main() => runApp(SignUpApp());
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox(personnelBox);
+  await Hive.openBox(groupBox);
+  runApp(SignUpApp());
+}
 
 enum StatusType { none, permEx, tempEx, bothEx, mc }
+
 
 class Personnel {
   final int id;
@@ -48,6 +55,7 @@ class PersonnelGroup {
 }
 
 class SignUpApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
